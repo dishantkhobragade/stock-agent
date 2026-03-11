@@ -1,6 +1,7 @@
-from agent import analyze_stock
+import yfinance as yf
 
-result = analyze_stock("RELIANCE.NS")
+result = yf.Search("tata steel")
+quotes = result.quotes
 
-print(result)
-print("Type:", type(result))
+for quote in quotes:
+    print(quote.get("symbol"), quote.get("exchange"))

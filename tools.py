@@ -5,13 +5,20 @@ from config import STOCK_SETTINGS
 
 def resolve_symbol(user_input):
     user_input = user_input.strip()
-
     result = yf.Search(user_input)
     quotes = result.quotes
+    
     if not quotes:
-        return user_input  # If no results, return the original input
-    else:
-        return quotes[0]["symbol"]
+        return user_input
+    
+    # Loop through all results
+    for quote in quotes:
+        # Check if it's an Indian stock
+        if quote["exchange"] == "NSI" or quote["exchange"] == "BSE":
+            return quote["symbol"]
+    
+    # No Indian stock found → return first result
+    return quotes[0]["symbol"]
 
 def get_stock_summary(symbol):
     # Print a message so we know the function is running

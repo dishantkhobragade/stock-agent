@@ -7,3 +7,6 @@ config.py
 # Python cache files
 __pycache__/
 *.pyc
+
+# Personal notes
+MASTER_NOTES.md
