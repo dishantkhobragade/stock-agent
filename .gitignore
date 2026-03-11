@@ -1,0 +1,9 @@
+# Virtual environment
+.venv/
+
+# Config file (contains secret API key!)
+config.py
+
+# Python cache files
+__pycache__/
+*.pyc
