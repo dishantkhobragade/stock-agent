@@ -2,6 +2,21 @@
 
 import yfinance as yf
 from config import STOCK_SETTINGS
+from config import EXCHANGE_MAP
+
+def get_stock_by_country(user_input,country):
+    user_input = user_input.strip()
+    result = yf.Search(user_input)
+    quotes = result.quotes
+    country_exchanges = EXCHANGE_MAP.get(country, []) 
+
+    matches = []
+    for quote in quotes:
+        if quote["exchange"] in country_exchanges:
+            matches.append(quote)
+    return matches
+
+    
 
 def resolve_symbol(user_input):
     user_input = user_input.strip()
