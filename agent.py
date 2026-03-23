@@ -40,3 +40,46 @@ def analyze_stock(symbol):
     
     # Step 4 - Return Gemini's analysis
     return response.text
+
+# --Stock Analysis for 2 Stocks--
+
+def compare_stocks(symbol1, symbol2):
+    print(f"Comparing {symbol1} vs {symbol2}...")
+    
+    # Fetch data for both stocks
+    stock_data1 = get_stock_summary(symbol1)
+    stock_data2 = get_stock_summary(symbol2)
+    
+    prompt = f"""
+    You are an expert stock analyst. Compare these two stocks:
+    
+    Stock 1: {stock_data1['company_name']}
+    Sector: {stock_data1['sector']}
+    Current Price: {stock_data1['current_price']}
+    PE Ratio: {stock_data1['pe_ratio']}
+    ROE: {stock_data1['roe']}
+    Debt/Equity: {stock_data1['debt_to_equity']}
+    EPS: {stock_data1['eps']}
+    
+    Stock 2: {stock_data2['company_name']}
+    Sector: {stock_data2['sector']}
+    Current Price: {stock_data2['current_price']}
+    PE Ratio: {stock_data2['pe_ratio']}
+    ROE: {stock_data2['roe']}
+    Debt/Equity: {stock_data2['debt_to_equity']}
+    EPS: {stock_data2['eps']}
+    
+    Please provide:
+    1. Overall comparison
+    2. Which is cheaper/expensive?
+    3. Key risks for both
+    4. 6 month prediction for both
+    5. Which is better for long term and why?
+    """
+    
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+    
+    return response.text

@@ -16,25 +16,6 @@ def get_stock_by_country(user_input,country):
             matches.append(quote)
     return matches
 
-    
-
-def resolve_symbol(user_input):
-    user_input = user_input.strip()
-    result = yf.Search(user_input)
-    quotes = result.quotes
-    
-    if not quotes:
-        return user_input
-    
-    # Loop through all results
-    for quote in quotes:
-        # Check if it's an Indian stock
-        if quote["exchange"] == "NSI" or quote["exchange"] == "BSE":
-            return quote["symbol"]
-    
-    # No Indian stock found → return first result
-    return quotes[0]["symbol"]
-
 def get_stock_summary(symbol):
     # Print a message so we know the function is running
     print(f"Getting summary for {symbol}...")
@@ -49,23 +30,26 @@ def get_stock_summary(symbol):
     # info.get("key", "N/A") means:
     # → try to get this value, if not available return "N/A"
     return {
-        "symbol": symbol,                                           # Stock symbol e.g. RELIANCE.NS
-        "company_name": info.get("longName", symbol),              # Full company name
-        "sector": info.get("sector", "N/A"),                       # e.g. Technology, Finance
-        "industry": info.get("industry", "N/A"),                   # e.g. Software, Banking
-        "current_price": info.get("currentPrice", "N/A"),          # Today's price
-        "52_week_high": info.get("fiftyTwoWeekHigh", "N/A"),       # Highest price in 1 year
-        "52_week_low": info.get("fiftyTwoWeekLow", "N/A"),         # Lowest price in 1 year
-        "market_cap": info.get("marketCap", "N/A"),                # Total company value
-        "pe_ratio": info.get("trailingPE", "N/A"),                 # Price to Earnings ratio
-        "description": info.get("longBusinessSummary", "N/A"),     # What the company does
-        "peg_ratio": info.get("pegRatio", "N/A"),                  # growth adjusted PE ratio
-        "roe": info.get("returnOnEquity", "N/A"),                  # How eficiently company uses equity
-        "debt_to_equity": info.get("debtToEquity", "N/A"),         # How much debt vs equity
-        "eps": info.get("trailingEps", "N/A")                      # Earnings per share
+        "symbol": symbol,                                                                 # Stock symbol e.g. RELIANCE.NS
+        "company_name": info.get("longName", info.get("shortName", symbol)),              # Full company name
+        "sector": info.get("sector", "N/A"),                                              # e.g. Technology, Finance
+        "industry": info.get("industry", "N/A"),                                          # e.g. Software, Banking
+        "current_price": info.get("currentPrice", "N/A"),                                 # Today's price
+        "52_week_high": info.get("fiftyTwoWeekHigh", "N/A"),                              # Highest price in 1 year
+        "52_week_low": info.get("fiftyTwoWeekLow", "N/A"),                                # Lowest price in 1 year
+        "market_cap": info.get("marketCap", "N/A"),                                       # Total company value
+        "pe_ratio": info.get("trailingPE", "N/A"),                                        # Price to Earnings ratio
+        "description": info.get("longBusinessSummary", "N/A"),                            # What the company does
+        "peg_ratio": info.get("pegRatio", "N/A"),                                         # growth adjusted PE ratio
+        "roe": info.get("returnOnEquity", "N/A"),                                         # How eficiently company uses equity
+        "debt_to_equity": info.get("debtToEquity", "N/A"),                                # How much debt vs equity
+        "eps": info.get("trailingEps", "N/A")                                             # Earnings per share
     }
 
-def get_stock_data(symbol):
+def get_stock_data(symbol, period=STOCK_SETTINGS["default_period"]):
+    
+    # Look up correct interval for this period
+    interval = STOCK_SETTINGS["period_interval_map"].get(period, "1wk")
     # Print message so we know function is running
     print(f"Fetching price history for {symbol}...")
     
@@ -74,8 +58,8 @@ def get_stock_data(symbol):
     
     # Fetch historical price data using our settings
     history = stock.history(
-        period=STOCK_SETTINGS["default_period"],
-        interval=STOCK_SETTINGS["default_interval"]
+        period=period,
+        interval=interval
     )
     
     # Return the historical data
