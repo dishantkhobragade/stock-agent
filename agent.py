@@ -2,7 +2,8 @@
 
 from google import genai
 from config import GEMINI_API_KEY
-from tools import get_stock_summary
+from tools import get_stock_summary, get_stock_news
+from vector_store import get_similar_stocks
 
 # Connect to Gemini AI using our API key
 client = genai.Client(api_key=GEMINI_API_KEY)
@@ -83,3 +84,40 @@ def compare_stocks(symbol1, symbol2):
     )
     
     return response.text
+
+def rag_analysis(symbol):
+    past_data = get_similar_stocks(symbol, n_results=1)
+    current_data = get_stock_summary(symbol)
+    news = get_stock_news(current_data['company_name'])
+
+    prompt = f"""
+    You are an expert stock analyst.
+
+    PAST ANALYSIS FROM MEMORY:
+    {past_data}
+
+    CURRENT FUNDAMENTALS:
+    Company: {current_data['company_name']}
+    PE Ratio: {current_data['pe_ratio']}
+    ROE: {current_data['roe']}
+    EPS: {current_data['eps']}
+    Current Price: {current_data['current_price']}
+
+    LATEST NEWS:
+    {news}
+
+    Please provide:
+    1. Overall analysis
+    2. Is it cheap or expensive?
+    3. Key risks
+    4. 6 month prediction
+    5. BUY / SELL / HOLD recommendation
+    """
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+    return response.text
+
+

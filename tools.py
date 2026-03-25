@@ -1,8 +1,11 @@
 # tools.py - eyes and ears of our agent 
 
 import yfinance as yf
-from config import STOCK_SETTINGS
+import requests
+from config import NEWS_API_KEY, STOCK_SETTINGS
 from config import EXCHANGE_MAP
+
+
 
 def get_stock_by_country(user_input,country):
     user_input = user_input.strip()
@@ -64,3 +67,16 @@ def get_stock_data(symbol, period=STOCK_SETTINGS["default_period"]):
     
     # Return the historical data
     return history
+
+def get_stock_news(query):
+    url = "https://newsapi.org/v2/everything"
+    params = {
+        "q": query,
+        "language": "en",
+        "sortBy": "publishedAt",
+        "pageSize": 5,
+        "apiKey": NEWS_API_KEY
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+    return data.get("articles", [])
