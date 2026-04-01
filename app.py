@@ -36,6 +36,8 @@ if "analysis" not in st.session_state:
     st.session_state.analysis = None
 if "period" not in st.session_state:
     st.session_state.period = "5y"
+if "rag_results" not in st.session_state:
+    st.session_state.rag_result = None
     
 
 
