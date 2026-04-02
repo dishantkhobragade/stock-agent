@@ -20,3 +20,10 @@ def get_similar_stocks(query, n_results=STOCK_SETTINGS["vector_search_results"])
         n_results = n_results
     )
     return result
+
+def view_all_stocks():
+    all_data = collection.get()
+    return all_data
+if __name__ == "__main__":
+    data = view_all_stocks()
+    print(data)

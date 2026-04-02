@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 from agent import analyze_stock, compare_stocks, rag_analysis
 from tools import get_stock_summary, get_stock_data, get_stock_by_country, get_stock_news
 from config import EXCHANGE_MAP, STOCK_SETTINGS, NEWS_API_KEY
-from vector_store import save_stock_analysis, get_similar_stocks
+from vector_store import save_stock_analysis, get_similar_stocks, view_all_stocks
 
 
 # ── PAGE CONFIGURATION ──
@@ -39,8 +39,6 @@ if "period" not in st.session_state:
 if "rag_results" not in st.session_state:
     st.session_state.rag_result = None
     
-
-
 # ── TAB CONFIGURATION ──
 
 tab1, tab2 = st.tabs(["📈 Stock Analysis Agent","⚖️ Compare Stocks"])
@@ -48,7 +46,7 @@ tab1, tab2 = st.tabs(["📈 Stock Analysis Agent","⚖️ Compare Stocks"])
 with tab1:
 
     # ── COUNTRY DROPDOWN ──
-    country = st.selectbox("Select Country 🌍", EXCHANGE_MAP.keys())
+    country = "India"
 
     # ── SEARCH BOX ──
     user_input = st.text_input("Enter Company Name 🔍",
